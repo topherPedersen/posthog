@@ -1,5 +1,6 @@
 from .base import BaseTest
 from posthog.models import Event, Person
+from django.test import tag
 import base64
 import json
 import datetime
@@ -41,6 +42,7 @@ class TestCapture(BaseTest):
         self.assertEqual(elements[1].text, '💻')
         self.assertEqual(event.distinct_id, "2")
 
+    @tag('events_db')
     def test_capture_no_element(self):
         user = self._create_user('tim')
         Person.objects.create(team=self.team, distinct_ids=['asdfasdfasdf'])
@@ -83,6 +85,7 @@ class TestCapture(BaseTest):
         person = Person.objects.get()
         self.assertEqual(person.properties['whatever'], 'this is')
 
+    @tag('events_db')
     def test_python_library(self):
         response = self.client.post('/track/', data={
             'data': self._dict_to_b64({
@@ -110,6 +113,7 @@ class TestCapture(BaseTest):
         event = Event.objects.get()
         self.assertEqual(event.element_set.all().first().text, '💻 Writing code')
 
+    @tag('events_db')
     def test_ignore_empty_request(self):
         response = self.client.get('/e/?data=', content_type='application/json', HTTP_REFERER='https://localhost')
         self.assertEqual(response.content, b"1")
@@ -129,6 +133,7 @@ class TestCapture(BaseTest):
         self.assertEqual(Event.objects.count(), 0)
         self.assertEqual(Person.objects.get().distinct_ids, ["old_distinct_id", "new_distinct_id"])
 
+@tag('events_db')
 class TestBatch(BaseTest):
     TESTS_API = True
     def test_batch_capture(self):

@@ -1,25 +1,28 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import ugettext_lazy as _
-from posthog.models import Event, User, Team, Person, Element, Funnel, FunnelStep, Action, ActionStep, DashboardItem
+from django.conf import settings
+from django.apps import apps
+from posthog.models import User, Team, Funnel, FunnelStep, Action, ActionStep, DashboardItem, Event, Person, Element
 
 admin.site.register(Team)
-admin.site.register(Person)
-admin.site.register(Element)
 admin.site.register(Funnel)
 admin.site.register(FunnelStep)
 admin.site.register(Action)
 admin.site.register(ActionStep)
 admin.site.register(DashboardItem)
 
-@admin.register(Event)
-class EventAdmin(admin.ModelAdmin):
-    readonly_fields = ('timestamp',)
-    list_display = ('timestamp', 'event', 'id',)
+if not hasattr(settings, 'EVENTS_MODELS'):
+    admin.site.register(Person)
+    admin.site.register(Element)
+    @admin.register(Event)
+    class EventAdmin(admin.ModelAdmin):
+        readonly_fields = ('timestamp',)
+        list_display = ('timestamp', 'event', 'id',)
 
-    def get_queryset(self, request):
-        qs = super(EventAdmin, self).get_queryset(request)
-        return qs.order_by('-timestamp')
+        def get_queryset(self, request):
+            qs = super(EventAdmin, self).get_queryset(request)
+            return qs.order_by('-timestamp')
  
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):

@@ -105,7 +105,8 @@ class ActionViewSet(viewsets.ModelViewSet):
         return Response({'results': actions_list})
 
     def _group_events_to_date(self, date_from, aggregates, steps, ):
-        aggregates = pd.DataFrame([{'date': a.day, 'count': a.id} for a in aggregates])
+        from ipdb import set_trace; set_trace()
+        aggregates = pd.DataFrame([{'date': a.day, 'count': a.id if hasattr(a, 'id') else a.count} for a in aggregates])
         aggregates['date'] = aggregates['date'].dt.date
         # create all dates
         time_index = pd.date_range(date_from, periods=steps + 1, freq='D')
@@ -156,7 +157,7 @@ class ActionViewSet(viewsets.ModelViewSet):
             }
             where = self._where_query(request, date_from)
             aggregates = Event.objects.filter_by_action(action, count_by='day', where=where)
-            if len(aggregates) > 0:
+            if (hasattr(aggregates, 'count') and aggregates.count() > 0) or len(aggregates) > 0:
                 dates_filled = self._group_events_to_date(date_from=date_from, aggregates=aggregates, steps=steps)
                 values = [value[0] for key, value in dates_filled.iterrows()]
                 append['labels'] = [key.strftime('%-d %B') for key, value in dates_filled.iterrows()]

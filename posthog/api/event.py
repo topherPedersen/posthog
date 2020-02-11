@@ -1,11 +1,14 @@
-from posthog.models import Event, Team, Person, Element, Action, ActionStep, PersonDistinctId
+from posthog.models import Team, Action, ActionStep, Event, Element, Person
 from rest_framework import request, response, serializers, viewsets # type: ignore
 from rest_framework.decorators import action # type: ignore
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Q, Count, QuerySet, query, Prefetch, F, Func, TextField, functions
 from django.forms.models import model_to_dict
+from django.apps import apps
+from django.conf import settings
 from typing import Any, Union, Tuple, Dict, List
 import re
+
 
 class ElementSerializer(serializers.ModelSerializer):
     event = serializers.CharField() 

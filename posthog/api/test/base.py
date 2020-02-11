@@ -1,6 +1,7 @@
 from django.test import TestCase
 from posthog.models import User, Team
 from django.test import Client
+from django.conf import settings
 
 
 class BaseTest(TestCase):
@@ -15,9 +16,15 @@ class BaseTest(TestCase):
 
     def setUp(self):
         super().setUp()
+
         self.team: Team = Team.objects.create(api_token='token123')
         if self.TESTS_API:
             self.client = Client()
             self.user = self._create_user('user1')
             self.client.force_login(self.user)
     
+        if hasattr(settings, 'CLICKHOUSE_DATABASES'):
+            from ultimate.integrations.clickhouse.models import Event
+            from django_clickhouse.database import connections
+            # connections['default'].drop_table(Event)
+            # connections['default'].create_table(Event)

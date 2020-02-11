@@ -1,7 +1,9 @@
 from .base import BaseTest
 from posthog.models import Action, ActionStep, Event, Element, Person
 from freezegun import freeze_time # type: ignore
+from django.test import tag
 
+@tag('events_db')
 class TestAction(BaseTest):
     TESTS_API = True
 

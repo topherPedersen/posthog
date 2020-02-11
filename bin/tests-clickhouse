@@ -1,0 +1,6 @@
+export ULTIMATE_LICENSE_KEY=1
+export DATABASE_TYPE=clickhouse
+
+python manage.py test ultimate.integrations.clickhouse --noinput
+
+nodemon --ext py --exec "ULTIMATE_LICENSE_KEY=1 DATABASE_TYPE=clickhouse python manage.py test --parallel=1 --keepdb --tag=events_db; mypy posthog"

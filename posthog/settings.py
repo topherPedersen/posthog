@@ -165,3 +165,19 @@ REST_FRAMEWORK = {
 
 # You can pass a comma deliminated list of domains with which users can sign up to this service
 RESTRICT_SIGNUPS = os.environ.get('RESTRICT_SIGNUPS', False)
+
+## Load Growth/Ultimate and add specific settings
+if os.environ.get('ULTIMATE_LICENSE_KEY'):
+    INSTALLED_APPS.append('ultimate.apps.UltimateConfig')
+
+    if os.environ.get('DATABASE_TYPE') == 'clickhouse':
+        EVENTS_MODELS = 'ultimate.integrations.clickhouse.models'
+        CLICKHOUSE_MIGRATE_WITH_DEFAULT_DB = False
+        CLICKHOUSE_MIGRATIONS_PACKAGE = 'integrations.clickhouse.migrations'
+        CLICKHOUSE_DATABASES = {
+            'default': {
+                'db_name': 'test',
+                'username': 'default',
+                'password': ''
+            }
+        }
