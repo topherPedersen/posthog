@@ -103,11 +103,7 @@ export function Trends() {
                     <span>
                         Graph
                         <div className="float-right">
-                            <IntervalFilter
-                                setFilters={setFilters}
-                                filters={filters}
-                                disabled={filters.breakdown || filters.session}
-                            />
+                            <IntervalFilter setFilters={setFilters} filters={filters} disabled={filters.session} />
                             <ChartFilter displayMap={displayMap} filters={filters} onChange={setDisplay}></ChartFilter>
                             <DateFilter
                                 onChange={(date_from, date_to) =>

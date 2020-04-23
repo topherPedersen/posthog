@@ -63,11 +63,11 @@ class Filter(object):
         if self._date_from:
             if self._date_from == 'all':
                 return None
-            return relative_date_parse(self._date_from)
-        return timezone.now().replace(hour=0, minute=0, second=0, microsecond=0) - relativedelta(days=7)
+            return relative_date_parse(self._date_from).date()
+        return datetime.date.today() - relativedelta(days=7)
 
     @property
-    def date_to(self) -> datetime.datetime:
+    def date_to(self) -> datetime.date:
         if self._date_to:
-            return relative_date_parse(self._date_to)
-        return timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            return relative_date_parse(self._date_to).date()
+        return datetime.date.today()
