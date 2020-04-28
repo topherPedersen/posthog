@@ -17,15 +17,12 @@ class AllowIP(object):
         self.get_response = get_response
 
     def get_forwarded_for(self, request: HttpRequest):
-        forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        if forwarded_for is not None:
-            return [ip.strip() for ip in forwarded_for.split(',')]
-        else:
-            return []
+        forwarded_for = request.META['HTTP_X_FORWARDED_FOR']
+        return [ip.strip() for ip in forwarded_for.split(',')]
 
     def extract_client_ip(self, request: HttpRequest):
         client_ip = request.META['REMOTE_ADDR']
-        if getattr(settings, 'USE_X_FORWARDED_HOST', False):
+        if request.META.get('HTTP_X_FORWARDED_FOR', False):
             forwarded_for = self.get_forwarded_for(request)
             if forwarded_for:
                 closest_proxy = client_ip
