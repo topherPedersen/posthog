@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField, ArrayField
-
+from django.db import connection
 from django.db.models import (
     Exists,
     OuterRef,
@@ -101,31 +101,53 @@ class Funnel(models.Model):
 
     def get_steps(self) -> List[Dict[str, Any]]:
         filter = Filter(data=self.filters)
-        people = (
-            Person.objects.all()
-            .filter(team_id=self.team_id, persondistinctid__distinct_id__isnull=False)
-            .annotate(
-                **self._annotate_steps(
-                    team_id=self.team_id,
-                    filter=filter
+        with connection.cursor() as cursor:
+            cursor.execute('''
+               with depth as (
+                select distinct_id, count(distinct event) steps
+                from posthog_event
+                -- Populate following programatically
+                where 1=1 
+                and team_id = 1
+                group by distinct_id
                 )
-            )
-            .filter(step_0__isnull=False)
-            .distinct("pk")
-        )
+
+                SELECT "posthog_person"."id",
+                       "posthog_person"."created_at",
+                       "posthog_person"."team_id",
+                       "posthog_person"."properties",
+                       "posthog_person"."is_user_id",
+                       d.steps
+                from depth d
+                join posthog_persondistinctid pdi on d.distinct_id = pdi.distinct_id
+                join posthog_person on posthog_person.id = pdi.id;
+            ''')
+            rows = cursor.fetchall()
+
+        start = datetime.datetime.now()
+        people_step_count = {
+            person[0]: person[5] for person in rows
+        }
+        duration = datetime.datetime.now() - start
+        print("~~~~~~~~", duration, "~~~~~~~~~")
 
         steps = []
         for index, funnel_step in enumerate(filter.entities):
+            start = datetime.datetime.now()
             relevant_people = [
-                person.id
-                for person in people
-                if getattr(person, "step_{}".format(index))
+                person[0]
+                for person in rows
+                if index < person[5]
             ]
             steps.append(self._serialize_step(funnel_step, relevant_people))
+            duration = datetime.datetime.now() - start
+            print("~~~~~~~~", funnel_step.id, "---", duration, "~~~~~~~~~")
 
         if len(steps) > 0:
             for index, _ in enumerate(steps):
-                steps[index]["people"] = self._order_people_in_step(
-                    steps, steps[index]["people"]
-                )[0:100]
+                start = datetime.datetime.now()
+                steps[index]["people"] = sorted(steps[index]["people"], key=lambda p: people_step_count[p], reverse=True)[0:100]
+                duration = datetime.datetime.now() - start
+                print("~~~~~~~~", index, "---", duration, "~~~~~~~~~")
         return steps
+
