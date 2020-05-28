@@ -16,7 +16,7 @@ export function Funnel({ id }) {
         <div className="funnel">
             {funnel.id ? <h1>Funnel: {funnel.name}</h1> : <h1>New funnel</h1>}
             <p style={{ maxWidth: 600 }}>
-                <i>Add multiple actions and event (order sensitive) and save to see the funnel visualization</i>
+                <i>Add multiple actions or events (order sensitive) and save to see the funnel visualization</i>
             </p>
             <EditFunnel funnelId={id} />
 
