@@ -7,7 +7,6 @@ import { Input, Button } from 'antd'
 const logic = kea({
     actions: () => ({
         setEditedWebhook: (webhook) => ({ webhook }),
-        setEditedMessageFormat: (message_format) => ({ message_format }),
         saveWebhook: true,
         testAndSaveWebhook: true,
         setError: (error) => ({ error }),
@@ -18,12 +17,6 @@ const logic = kea({
             (state) => userLogic.selectors.user(state)?.team?.slack_incoming_webhook,
             {
                 [actions.setEditedWebhook]: (_, { webhook }) => webhook,
-            },
-        ],
-        editedMessageFormat: [
-            (state) => userLogic.selectors.user(state)?.team?.slack_message_format,
-            {
-                [actions.setEditedMessageFormat]: (_, { message_format }) => message_format,
             },
         ],
         isSaving: [
@@ -45,7 +38,6 @@ const logic = kea({
                 [actions.testAndSaveWebhook]: () => false,
                 [userLogic.actions.userUpdateSuccess]: (state, { updateKey }) => (updateKey === 'slack' ? true : state),
                 [actions.setEditedWebhook]: () => false,
-                [actions.setEditedMessageFormat]: () => false,
             },
         ],
         error: [
@@ -55,20 +47,19 @@ const logic = kea({
                 [actions.testAndSaveWebhook]: () => null,
                 [actions.setError]: (_, { error }) => error,
                 [actions.setEditedWebhook]: () => null,
-                [actions.setEditedMessageFormat]: () => null,
             },
         ],
     }),
 
     listeners: ({ actions, values }) => ({
         [actions.testAndSaveWebhook]: async () => {
-            const { editedWebhook, editedMessageFormat } = values
+            const { editedWebhook } = values
             if (editedWebhook) {
                 try {
                     const response = await api.create('api/user/test_slack_webhook', { webhook: editedWebhook })
 
                     if (response.success) {
-                        actions.saveWebhook(editedWebhook, editedMessageFormat)
+                        actions.saveWebhook(editedWebhook)
                     } else {
                         actions.setError(response.error)
                     }
@@ -76,19 +67,18 @@ const logic = kea({
                     actions.setError(error.message)
                 }
             } else {
-                actions.saveWebhook(editedWebhook, editedMessageFormat)
+                actions.saveWebhook(editedWebhook)
             }
         },
         [actions.saveWebhook]: async () => {
             userLogic.actions.userUpdateRequest({ team: { slack_incoming_webhook: values.editedWebhook } }, 'slack')
-            userLogic.actions.userUpdateRequest({ team: { slack_message_format: values.editedMessageFormat } }, 'slack')
         },
     }),
 })
 
 export function SlackIntegration() {
-    const { isSaved, isSaving, error, editedWebhook, editedMessageFormat } = useValues(logic)
-    const { testAndSaveWebhook, setEditedWebhook, setEditedMessageFormat } = useActions(logic)
+    const { isSaved, isSaving, error, editedWebhook } = useValues(logic)
+    const { testAndSaveWebhook, setEditedWebhook } = useActions(logic)
 
     return (
         <div>
@@ -106,16 +96,6 @@ export function SlackIntegration() {
                     type="url"
                 />
             </div>
-            <div style={{ marginBottom: 5 }}>
-                <Input
-                    value={editedMessageFormat}
-                    size="large"
-                    onChange={(e) => setEditedMessageFormat(e.target.value)}
-                    style={{ width: 500 }}
-                    type="text"
-                />
-            </div>
-
 
             <Button
                 type="primary"

@@ -109,7 +109,8 @@ export function ActionEdit({ actionId, apiURL, onSave, user, isEditor, simmer, s
                 ))}
 
                 {!isEditor ? (
-                    <div style={{ marginTop: 20, marginBottom: 15 }}>
+                    <div>
+                    <div style={{ marginTop: 20 }}>
                         <label className={slackEnabled ? '' : 'disabled'} style={{ marginRight: 5 }}>
                             <input
                                 type="checkbox"
@@ -125,6 +126,25 @@ export function ActionEdit({ actionId, apiURL, onSave, user, isEditor, simmer, s
                         <Link to="/setup#slack">
                             <small>Configure</small>
                         </Link>
+                    </div>
+                    <div style={{ marginBottom: 15 }}>
+                    <label className={slackEnabled ? '' : 'disabled' || action.post_to_slack ? false : 'disabled'}>
+                               Message Format.&nbsp;
+                               <Link to="/setup#slack">
+                                     Help
+                               </Link>
+                               <input
+                                   className="form-control"
+                                   placeholder="Default: Action '[action:name]' did by user [user:name]"
+                                   value={action.slack_message_format}
+                                   onChange={(e) => {
+                                       setEdited(e.target.value ? true : false)
+                                   }}
+                                   disabled={!action.post_to_slack}
+                                   data-attr="edit-slack-message-format"
+                               />
+                       </label>
+                       </div>
                     </div>
                 ) : (
                     <br />

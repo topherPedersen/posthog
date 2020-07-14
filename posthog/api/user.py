@@ -29,7 +29,6 @@ def user(request):
             team.app_urls = data["team"].get("app_urls", team.app_urls)
             team.opt_out_capture = data["team"].get("opt_out_capture", team.opt_out_capture)
             team.slack_incoming_webhook = data["team"].get("slack_incoming_webhook", team.slack_incoming_webhook)
-            team.slack_message_format = data["team"].get("slack_message_format", team.slack_message_format)
             team.anonymize_ips = data["team"].get("anonymize_ips", team.anonymize_ips)
             team.completed_snippet_onboarding = data["team"].get(
                 "completed_snippet_onboarding", team.completed_snippet_onboarding
@@ -68,7 +67,6 @@ def user(request):
                 "opt_out_capture": team.opt_out_capture,
                 "anonymize_ips": team.anonymize_ips,
                 "slack_incoming_webhook": team.slack_incoming_webhook,
-                "slack_message_format": team.slack_message_format,
                 "event_names": team.event_names,
                 "event_properties": team.event_properties,
                 "completed_snippet_onboarding": team.completed_snippet_onboarding,

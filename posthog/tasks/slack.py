@@ -64,4 +64,4 @@ def post_event_to_slack(event_id: int, site_url: str) -> None:
                     "text": "{} did by user {}".format(actions_markdown, user_markdown),
                 }
 
-            requests.post(team.slack_incoming_webhook, verify=False, json=message_format)
+            requests.post(team.slack_incoming_webhook, verify=False, json=message)

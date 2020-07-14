@@ -45,6 +45,7 @@ export const actionEditLogic = kea({
     listeners: ({ values, props, actions }) => ({
         saveAction: async () => {
             let action = { ...values.action }
+            console.log(action.slack_message_format)
             action.steps = action.steps.map((step) => {
                 let localStep = { ...step }
                 if (localStep.event == '$pageview') localStep.selection = ['url', 'url_matching', 'properties']

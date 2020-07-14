@@ -71,7 +71,6 @@ class Team(models.Model):
     app_urls: ArrayField = ArrayField(models.CharField(max_length=200, null=True, blank=True), default=list)
     name: models.CharField = models.CharField(max_length=200, null=True, blank=True)
     slack_incoming_webhook: models.CharField = models.CharField(max_length=200, null=True, blank=True)
-    slack_message_format: models.CharField = models.CharField(max_length=200, null=True, blank=True)
     event_names: JSONField = JSONField(default=list)
     event_properties: JSONField = JSONField(default=list)
     created_at: models.DateTimeField = models.DateTimeField(auto_now_add=True)
