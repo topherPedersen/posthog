@@ -13,7 +13,6 @@ def post_event_to_slack(event_id: int, site_url: str) -> None:
     if not site_url:
         site_url = settings.SITE_URL
 
-    message_format = team.slack_message_format
     if team.slack_incoming_webhook:
         try:
             user_name = event.person.properties.get("email", event.distinct_id)
@@ -30,7 +29,8 @@ def post_event_to_slack(event_id: int, site_url: str) -> None:
             user_markdown = "[{}]({}/person/{})".format(user_name, site_url, event.distinct_id)
 
         actions = [action for action in event.action_set.all() if action.post_to_slack]
-
+        for action in actions:
+            print(action.slack_message_format)
         if actions:
             if webhook_type == "slack":
                 action_links = ", ".join(

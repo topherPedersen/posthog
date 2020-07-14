@@ -138,6 +138,7 @@ export function ActionEdit({ actionId, apiURL, onSave, user, isEditor, simmer, s
                                    placeholder="Default: Action '[action:name]' did by user [user:name]"
                                    value={action.slack_message_format}
                                    onChange={(e) => {
+                                       setAction({ ...action, slack_message_format: e.target.value })
                                        setEdited(e.target.value ? true : false)
                                    }}
                                    disabled={!action.post_to_slack}
