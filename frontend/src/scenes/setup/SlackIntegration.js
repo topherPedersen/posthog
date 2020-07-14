@@ -62,13 +62,13 @@ const logic = kea({
 
     listeners: ({ actions, values }) => ({
         [actions.testAndSaveWebhook]: async () => {
-            const { editedWebhook } = values
+            const { editedWebhook, editedMessageFormat } = values
             if (editedWebhook) {
                 try {
                     const response = await api.create('api/user/test_slack_webhook', { webhook: editedWebhook })
 
                     if (response.success) {
-                        actions.saveWebhook(editedWebhook)
+                        actions.saveWebhook(editedWebhook, editedMessageFormat)
                     } else {
                         actions.setError(response.error)
                     }
@@ -76,7 +76,7 @@ const logic = kea({
                     actions.setError(error.message)
                 }
             } else {
-                actions.saveWebhook(editedWebhook)
+                actions.saveWebhook(editedWebhook, editedMessageFormat)
             }
         },
         [actions.saveWebhook]: async () => {

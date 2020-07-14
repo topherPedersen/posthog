@@ -8,12 +8,12 @@ def post_event_to_slack(event_id: int, site_url: str) -> None:
     # must import "Event" like this to avoid circular dependency with models.py (it imports tasks.py)
     event_model = apps.get_model(app_label="posthog", model_name="Event")
     event = event_model.objects.get(pk=event_id)
-    print(event.properties["$os"])
     team = event.team
 
     if not site_url:
         site_url = settings.SITE_URL
 
+    message_format = team.slack_message_format
     if team.slack_incoming_webhook:
         try:
             user_name = event.person.properties.get("email", event.distinct_id)
@@ -64,4 +64,4 @@ def post_event_to_slack(event_id: int, site_url: str) -> None:
                     "text": "{} did by user {}".format(actions_markdown, user_markdown),
                 }
 
-            requests.post(team.slack_incoming_webhook, verify=False, json=message)
+            requests.post(team.slack_incoming_webhook, verify=False, json=message_format)
