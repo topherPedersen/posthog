@@ -3,12 +3,12 @@ from django.apps import apps
 from django.conf import settings
 import requests
 
-
 @shared_task
 def post_event_to_slack(event_id: int, site_url: str) -> None:
     # must import "Event" like this to avoid circular dependency with models.py (it imports tasks.py)
     event_model = apps.get_model(app_label="posthog", model_name="Event")
     event = event_model.objects.get(pk=event_id)
+    print(event.properties["$os"])
     team = event.team
 
     if not site_url:
@@ -48,20 +48,20 @@ def post_event_to_slack(event_id: int, site_url: str) -> None:
 
             if webhook_type == "slack":
                 message = {
-                    "text": "{} triggered by user {}".format(actions_plain, user_name),
+                    "text": "{} did by user {}".format(actions_plain, user_name),
                     "blocks": [
                         {
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": "{} triggered by user {}".format(actions_markdown, user_markdown),
+                                "text": "{} did by user {}".format(actions_markdown, user_markdown),
                             },
                         }
                     ],
                 }
             else:
                 message = {
-                    "text": "{} triggered by user {}".format(actions_markdown, user_markdown),
+                    "text": "{} did by user {}".format(actions_markdown, user_markdown),
                 }
 
             requests.post(team.slack_incoming_webhook, verify=False, json=message)
