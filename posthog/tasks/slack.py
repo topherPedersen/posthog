@@ -34,10 +34,10 @@ def post_event_to_slack(event_id: int, site_url: str) -> None:
         if actions:
             for action in actions:
                 message_format = action.slack_message_format
-                if message_format == "":
+                if message_format is None:
                     message_format = "[action.name] was triggered by [user.name]"
-                matched_tokens = re.findall(r"(?<=\[)(.*?)(?=\])", message_format)
 
+                matched_tokens = re.findall(r"(?<=\[)(.*?)(?=\])", message_format)
                 if matched_tokens:
                     action_message = re.sub(r"\[(.*?)\]", '{}', message_format)
                     replaced_tokens = []
@@ -48,11 +48,11 @@ def post_event_to_slack(event_id: int, site_url: str) -> None:
                     else:
                         action_markdown = '"[{}]({}/action/{})"'.format(action.name, site_url, action.id)
 
-                    for token in matched_tokens:
-                        token_type = re.findall(r"\w+", token)[0]
-                        token_prop = re.findall(r"\w+", token)[1]
-                        
-                        try:
+                    try:
+                        for token in matched_tokens:
+                            token_type = re.findall(r"\w+", token)[0]
+                            token_prop = re.findall(r"\w+", token)[1]
+
                             if token_type == "user":
                                 if token_prop == "name":
                                     replaced_markdown_tokens.append(user_markdown)
@@ -67,7 +67,6 @@ def post_event_to_slack(event_id: int, site_url: str) -> None:
 
                             elif token_type == "action":
                                 if token_prop == "name":
-
                                     replaced_tokens.append(action.name)
                                     replaced_markdown_tokens.append(action_markdown)
 
@@ -76,12 +75,12 @@ def post_event_to_slack(event_id: int, site_url: str) -> None:
                                     replaced_tokens.append(event.event)
                                     replaced_markdown_tokens.append(event.event)
 
-                            message_markdown = action_message.format(*replaced_markdown_tokens)
-                            message_text = action_message.format(*replaced_tokens)
-                        except:
-                            error_message = "⚠ Error: There are one or more formatting errors in the slack message template for action {}."
-                            message_text = error_message.format("\"" + action.name + "\"")
-                            message_markdown = error_message.format(action_markdown)
+                        message_markdown = action_message.format(*replaced_markdown_tokens)
+                        message_text = action_message.format(*replaced_tokens)
+                    except:
+                        error_message = "⚠ Error: There are one or more formatting errors in the slack message template for action {}."
+                        message_text = error_message.format("\"" + action.name + "\"")
+                        message_markdown = error_message.format(action_markdown)
 
                     if webhook_type == "slack":
                         message = {
@@ -90,12 +89,12 @@ def post_event_to_slack(event_id: int, site_url: str) -> None:
                                 {
                                     "type": "section",
                                     "text": {
-                                        "type": "mrkdwn",
-                                        "text": message_markdown,
-                                    },
-                                }
-                            ],
-                        }
+                                    "type": "mrkdwn",
+                                    "text": message_markdown,
+                                },
+                            }
+                        ],
+                    }
                     else:
                         message = {
                             "text": message_markdown,

@@ -110,41 +110,45 @@ export function ActionEdit({ actionId, apiURL, onSave, user, isEditor, simmer, s
 
                 {!isEditor ? (
                     <div>
-                    <div style={{ marginTop: 20 }}>
-                        <label className={slackEnabled ? '' : 'disabled'} style={{ marginRight: 15 }}>
-                            <input
-                                type="checkbox"
-                                onChange={(e) => {
+                        <div style={{ marginTop: 20 }}>
+                            <label className={slackEnabled ? '' : 'disabled'} style={{ marginRight: 15 }}>
+                                <input
+                                    type="checkbox"
+                                    onChange={(e) => {
                                     setAction({ ...action, post_to_slack: e.target.checked })
                                     setEdited(true)
                                 }}
-                                checked={!!action.post_to_slack}
-                                disabled={!slackEnabled}
-                            />
-                            &nbsp;Post to Slack/Teams when this action is triggered.
-                        </label>
-                        <Link to="/setup#slack">
-                            <small>Configure</small>
-                        </Link>
-                    </div>
-                    <div style={{ marginBottom: 15 }}>
+                                    checked={!!action.post_to_slack}
+                                    disabled={!slackEnabled}
+                                 />
+                                 &nbsp;Post to Slack/Teams when this action is triggered.
+                            </label>
+                            <Link to="/setup#slack">
+                                <small>Configure</small>
+                            </Link>
+                        </div>
+                        <div style={{ marginBottom: 15 }}>
                                <input
                                    className="form-control"
                                    placeholder="Message Format: (e.g. [action.name] triggered by [user.name])"
                                    value={action.slack_message_format}
                                    onChange={(e) => {
                                        setAction({ ...action, slack_message_format: e.target.value })
+                                       setEdited(true)
                                    }}
                                    disabled={!action.post_to_slack}
                                    data-attr="edit-slack-message-format"
                                />
                                <small>
-                               <Link to="https://posthog.com/docs/integrations/message-formatting/">
+                               <a
+                                   href="https://posthog.com/docs/integrations/message-formatting/"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
                                      See documentation
-                               </Link>
+                               </a>
                                &nbsp;on how to format Slack/Teams messages.
                                </small>
-                       </div>
+                        </div>
                     </div>
                 ) : (
                     <br />
