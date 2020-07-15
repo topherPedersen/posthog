@@ -41,10 +41,16 @@ def post_event_to_slack(event_id: int, site_url: str) -> None:
                     replaced_tokens = []
                     replaced_markdown_tokens = []
 
+                    if webhook_type == "slack":
+                        action_markdown = '"<{}/action/{}|{}>"'.format(site_url, action.id, action.name)
+                    else:
+                        action_markdown = '"[{}]({}/action/{})"'.format(action.name, site_url, action.id)
+
                     for token in matched_tokens:
                         token_type = re.findall(r"\w+", token)[0]
                         token_prop = re.findall(r"\w+", token)[1]
 
+                        
                         try:
                             if token_type == "user":
                                 if token_prop == "name":
@@ -52,15 +58,14 @@ def post_event_to_slack(event_id: int, site_url: str) -> None:
                                     replaced_tokens.append(user_name)
                                 else:
                                     user_property = event.properties.get("$" + token_prop)
+                                    if user_property is None:
+                                        raise ValueError
+
                                     replaced_markdown_tokens.append(user_property)
                                     replaced_tokens.append(user_property)
 
                             elif token_type == "action":
                                 if token_prop == "name":
-                                    if webhook_type == "slack":
-                                        action_markdown = '"<{}/action/{}|{}>"'.format(site_url, action.id, action.name)
-                                    else:
-                                        action_markdown = '"[{}]({}/action/{})"'.format(action.name, site_url, action.id)
 
                                     replaced_tokens.append(action.name)
                                     replaced_markdown_tokens.append(action_markdown)
@@ -73,7 +78,9 @@ def post_event_to_slack(event_id: int, site_url: str) -> None:
                             message_markdown = action_message.format(*replaced_markdown_tokens)
                             message_text = action_message.format(*replaced_tokens)
                         except:
-                            message_text = message_markdown = "⚠ Error: One or more formatting errors in the slack message template for action \"{}\".".format(action.name)
+                            error_message = "⚠ Error: There are one or more formatting errors in the slack message template for action {}."
+                            message_text = error_message.format("\"" + action.name + "\"")
+                            message_markdown = error_message.format(action_markdown)
 
                     if webhook_type == "slack":
                         message = {
