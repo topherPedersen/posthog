@@ -34,6 +34,8 @@ def post_event_to_slack(event_id: int, site_url: str) -> None:
         if actions:
             for action in actions:
                 message_format = action.slack_message_format
+                if message_format == "":
+                    message_format = "[action.name] was triggered by [user.name]"
                 matched_tokens = re.findall(r"(?<=\[)(.*?)(?=\])", message_format)
 
                 if matched_tokens:
@@ -49,7 +51,6 @@ def post_event_to_slack(event_id: int, site_url: str) -> None:
                     for token in matched_tokens:
                         token_type = re.findall(r"\w+", token)[0]
                         token_prop = re.findall(r"\w+", token)[1]
-
                         
                         try:
                             if token_type == "user":

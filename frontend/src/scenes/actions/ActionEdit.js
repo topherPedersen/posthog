@@ -134,14 +134,16 @@ export function ActionEdit({ actionId, apiURL, onSave, user, isEditor, simmer, s
                                    value={action.slack_message_format}
                                    onChange={(e) => {
                                        setAction({ ...action, slack_message_format: e.target.value })
-                                       setEdited(e.target.value ? true : false)
                                    }}
                                    disabled={!action.post_to_slack}
                                    data-attr="edit-slack-message-format"
                                />
-                               <Link to="/setup#slack">
-                                     Documentation
+                               <small>
+                               <Link to="https://posthog.com/docs/integrations/message-formatting/">
+                                     See documentation
                                </Link>
+                               &nbsp;on how to format Slack/Teams messages.
+                               </small>
                        </div>
                     </div>
                 ) : (
