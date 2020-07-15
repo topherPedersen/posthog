@@ -158,9 +158,10 @@ def test_slack_webhook(request):
         return JsonResponse({"error": "Cannot parse request body"}, status=400)
 
     webhook = body.get("webhook")
+
     if not webhook:
         return JsonResponse({"error": "no webhook"})
-    message = {"text": "Greetings from Posthog!"} 
+    message = {"text": "Greetings from PostHog!"}
     try:
         response = requests.post(webhook, verify=False, json=message)
 

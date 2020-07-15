@@ -111,7 +111,7 @@ export function ActionEdit({ actionId, apiURL, onSave, user, isEditor, simmer, s
                 {!isEditor ? (
                     <div>
                     <div style={{ marginTop: 20 }}>
-                        <label className={slackEnabled ? '' : 'disabled'} style={{ marginRight: 5 }}>
+                        <label className={slackEnabled ? '' : 'disabled'} style={{ marginRight: 15 }}>
                             <input
                                 type="checkbox"
                                 onChange={(e) => {
@@ -128,14 +128,9 @@ export function ActionEdit({ actionId, apiURL, onSave, user, isEditor, simmer, s
                         </Link>
                     </div>
                     <div style={{ marginBottom: 15 }}>
-                    <label className={slackEnabled ? '' : 'disabled' || action.post_to_slack ? false : 'disabled'}>
-                               Message Format.&nbsp;
-                               <Link to="/setup#slack">
-                                     Help
-                               </Link>
                                <input
                                    className="form-control"
-                                   placeholder="Default: Action '[action:name]' did by user [user:name]"
+                                   placeholder="Message Format: (e.g. [action.name] triggered by [user.name])"
                                    value={action.slack_message_format}
                                    onChange={(e) => {
                                        setAction({ ...action, slack_message_format: e.target.value })
@@ -144,7 +139,9 @@ export function ActionEdit({ actionId, apiURL, onSave, user, isEditor, simmer, s
                                    disabled={!action.post_to_slack}
                                    data-attr="edit-slack-message-format"
                                />
-                       </label>
+                               <Link to="/setup#slack">
+                                     Documentation
+                               </Link>
                        </div>
                     </div>
                 ) : (
