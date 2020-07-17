@@ -241,9 +241,9 @@ function MathPropertySelector(props) {
                     placement="right"
                     title={
                         <>
-                            Calculate {MATHS[props.math].name.toLowerCase()} from property <code>{value}</code>. Note
-                            that only {props.name} occurences where <code>{value}</code> is set and a number will be
-                            taken into account.
+                            Calculate <code>{value}</code> property {MATHS[props.math].name.toLowerCase()}. Note that
+                            only {props.name} occurences where <code>{value}</code> is set and a number will be taken
+                            into account.
                         </>
                     }
                     key={`math-property-${value}-${props.index}`}
