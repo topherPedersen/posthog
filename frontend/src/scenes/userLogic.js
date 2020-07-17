@@ -30,15 +30,11 @@ export const userLogic = kea({
             () => [selectors.user],
             (user) => user.team.event_properties.map((property) => ({ value: property, label: property })),
         ],
+        eventPropertiesNumerical: [() => [selectors.user], (user) => user.team.event_properties_numerical],
         eventNames: [() => [selectors.user], (user) => user.team.event_names],
         customEventNames: [
             () => [selectors.user],
-            (user) => {
-                const eventNames = user.team.event_names
-                const regex = new RegExp('^[^$].*')
-                const filtered = eventNames.filter((event) => event.match(regex))
-                return filtered
-            },
+            (user) => user.team.event_names.filter((event) => !event.startswith('$')),
         ],
         eventNamesGrouped: [
             () => [selectors.user],
@@ -49,7 +45,7 @@ export const userLogic = kea({
                 ]
                 user.team.event_names.forEach((name) => {
                     let format = { label: name, value: name }
-                    if (posthogEvents.indexOf(name) > -1) return data[1].options.push(format)
+                    if (posthogEvents.includes(name)) return data[1].options.push(format)
                     data[0].options.push(format)
                 })
                 return data

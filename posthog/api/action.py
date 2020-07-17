@@ -523,7 +523,7 @@ def process_math(query: QuerySet, entity: Entity) -> QuerySet:
         # In daily active users mode count only up to 1 event per user per day
         query = query.annotate(count=Count("person_id", distinct=True))
     elif entity.math in math_to_aggregate_function:
-        # Run relevant aggregate function on specified event property, casting it to a double
+        # Run relevant aggregate function on specified event property, casting it to double
         query = query.annotate(
             count=math_to_aggregate_function[entity.math](
                 Cast(RawSQL('"posthog_event"."properties"->>%s', (entity.math_property,)), output_field=FloatField())

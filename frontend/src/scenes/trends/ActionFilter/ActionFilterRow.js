@@ -92,7 +92,7 @@ export function ActionFilterRow({ logic, filter, index, hideMathSelector }) {
     const node = useRef()
     const { selectedFilter, entities } = useValues(logic)
     const { selectFilter, updateFilterMath, removeLocalFilter, updateFilterProperty } = useActions(logic)
-    const { eventProperties } = useValues(userLogic)
+    const { eventProperties, eventPropertiesNumerical } = useValues(userLogic)
     const [entityFilterVisible, setEntityFilterVisible] = useState(false)
 
     let entity, name, value
@@ -161,7 +161,7 @@ export function ActionFilterRow({ logic, filter, index, hideMathSelector }) {
                     mathProperty={mathProperty}
                     index={index}
                     onMathPropertySelect={onMathPropertySelect}
-                    properties={eventProperties}
+                    propertiesNumerical={eventPropertiesNumerical}
                 />
             )}
             <div
@@ -236,30 +236,28 @@ function MathPropertySelector(props) {
             buttonClassName="btn btn-sm btn-light ml-2"
             data-attr={`math-property-selector-${props.index}`}
         >
-            {props.properties
-                .filter(({ value }) => value[0] !== '$' && value !== 'distinct_id')
-                .map(({ value, label }) => (
-                    <Tooltip
-                        placement="right"
-                        title={
-                            <>
-                                Calculate {MATHS[props.math].name.toLowerCase()} from property <code>{label}</code>.
-                                Note that only {props.name} occurences where <code>{label}</code> is set and a number
-                                will be taken into account.
-                            </>
-                        }
-                        key={`math-property-${value}-${props.index}`}
+            {props.propertiesNumerical.map((value) => (
+                <Tooltip
+                    placement="right"
+                    title={
+                        <>
+                            Calculate {MATHS[props.math].name.toLowerCase()} from property <code>{value}</code>. Note
+                            that only {props.name} occurences where <code>{value}</code> is set and a number will be
+                            taken into account.
+                        </>
+                    }
+                    key={`math-property-${value}-${props.index}`}
+                >
+                    <a
+                        href="#"
+                        className="dropdown-item"
+                        onClick={() => props.onMathPropertySelect(props.index, value)}
+                        data-attr={`math-property-${value}-${props.index}`}
                     >
-                        <a
-                            href="#"
-                            className="dropdown-item"
-                            onClick={() => props.onMathPropertySelect(props.index, value)}
-                            data-attr={`math-property-${value}-${props.index}`}
-                        >
-                            {label}
-                        </a>
-                    </Tooltip>
-                ))}
+                        {value}
+                    </a>
+                </Tooltip>
+            ))}
         </Dropdown>
     )
 }

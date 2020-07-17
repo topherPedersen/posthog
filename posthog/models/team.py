@@ -1,5 +1,7 @@
-from django.db import models
+from typing import List
+from django.db import models, connection
 from django.contrib.postgres.fields import JSONField, ArrayField
+from psycopg2 import sql
 from .action import Action
 from .action_step import ActionStep
 from .dashboard import Dashboard
@@ -83,6 +85,20 @@ class Team(models.Model):
     opt_out_capture: models.BooleanField = models.BooleanField(default=False)
 
     objects = TeamManager()
+
+    @property
+    def event_properties_numerical(self) -> List[str]:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """SELECT U0."key" FROM (
+                    SELECT DISTINCT jsonb_object_keys("posthog_event"."properties") AS "key" FROM "posthog_event"
+                ) U0 WHERE U0."key" NOT LIKE '$%' AND EXISTS (
+                    SELECT "posthog_event"."id" FROM "posthog_event"
+                    WHERE jsonb_typeof("posthog_event"."properties"->U0."key") = 'number' LIMIT 1
+                )"""
+            )
+            properties = [row[0] for row in cursor.fetchall()]
+            return properties
 
     def __str__(self):
         if self.name:
