@@ -30,7 +30,7 @@ export const userLogic = kea({
             () => [selectors.user],
             (user) => user.team.event_properties.map((property) => ({ value: property, label: property })),
         ],
-        eventPropertiesNumerical: [() => [selectors.user], (user) => user.team.event_properties_numerical],
+        eventPropertiesNumeric: [() => [selectors.user], (user) => user.team.event_properties_numeric],
         eventNames: [() => [selectors.user], (user) => user.team.event_names],
         customEventNames: [
             () => [selectors.user],

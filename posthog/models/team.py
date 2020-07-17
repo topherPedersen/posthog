@@ -87,7 +87,8 @@ class Team(models.Model):
     objects = TeamManager()
 
     @property
-    def event_properties_numerical(self) -> List[str]:
+    def event_properties_numeric(self) -> List[str]:
+        """Event properties that have at least one occurence where they're `number` type."""
         with connection.cursor() as cursor:
             cursor.execute(
                 """SELECT U0."key" FROM (

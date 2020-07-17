@@ -69,7 +69,7 @@ def user(request):
                 "slack_incoming_webhook": team.slack_incoming_webhook,
                 "event_names": team.event_names,
                 "event_properties": team.event_properties,
-                "event_properties_numerical": team.event_properties_numerical,
+                "event_properties_numeric": team.event_properties_numeric,
                 "completed_snippet_onboarding": team.completed_snippet_onboarding,
             },
             "opt_out_capture": os.environ.get("OPT_OUT_CAPTURE"),

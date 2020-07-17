@@ -92,7 +92,7 @@ export function ActionFilterRow({ logic, filter, index, hideMathSelector }) {
     const node = useRef()
     const { selectedFilter, entities } = useValues(logic)
     const { selectFilter, updateFilterMath, removeLocalFilter, updateFilterProperty } = useActions(logic)
-    const { eventProperties, eventPropertiesNumerical } = useValues(userLogic)
+    const { eventProperties, eventPropertiesNumeric } = useValues(userLogic)
     const [entityFilterVisible, setEntityFilterVisible] = useState(false)
 
     let entity, name, value
@@ -161,7 +161,7 @@ export function ActionFilterRow({ logic, filter, index, hideMathSelector }) {
                     mathProperty={mathProperty}
                     index={index}
                     onMathPropertySelect={onMathPropertySelect}
-                    propertiesNumerical={eventPropertiesNumerical}
+                    propertiesNumeric={eventPropertiesNumeric}
                 />
             )}
             <div
@@ -232,11 +232,11 @@ function MathSelector(props) {
 function MathPropertySelector(props) {
     return (
         <Dropdown
-            title={props.mathProperty || 'Select property'}
+            title={props.mathProperty || 'Select numeric property'}
             buttonClassName="btn btn-sm btn-light ml-2"
             data-attr={`math-property-selector-${props.index}`}
         >
-            {props.propertiesNumerical.map((value) => (
+            {props.propertiesNumeric.map((value) => (
                 <Tooltip
                     placement="right"
                     title={
