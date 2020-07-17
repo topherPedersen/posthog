@@ -92,10 +92,13 @@ class Team(models.Model):
             cursor.execute(
                 """SELECT U0."key" FROM (
                     SELECT DISTINCT jsonb_object_keys("posthog_event"."properties") AS "key" FROM "posthog_event"
-                ) U0 WHERE U0."key" NOT LIKE '$%' AND EXISTS (
+                    WHERE "posthog_event"."team_id" = %s
+                ) U0 WHERE U0."key" NOT LIKE '$%%' AND EXISTS (
                     SELECT "posthog_event"."id" FROM "posthog_event"
-                    WHERE jsonb_typeof("posthog_event"."properties"->U0."key") = 'number' LIMIT 1
-                )"""
+                    WHERE "posthog_event"."team_id" = %s
+                    AND jsonb_typeof("posthog_event"."properties"->U0."key") = 'number' LIMIT 1
+                )""",
+                (self.id, self.id),
             )
             properties = [row[0] for row in cursor.fetchall()]
             return properties

@@ -2,7 +2,7 @@ from collections import defaultdict
 import re
 
 from django.db import models, connection
-from django.contrib.postgres.fields import JSONField, ArrayField
+from django.contrib.postgres.fields import JSONField
 from django.db.models import (
     Exists,
     Min,
