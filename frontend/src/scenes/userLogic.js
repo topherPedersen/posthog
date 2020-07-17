@@ -34,7 +34,7 @@ export const userLogic = kea({
         eventNames: [() => [selectors.user], (user) => user.team.event_names],
         customEventNames: [
             () => [selectors.user],
-            (user) => user.team.event_names.filter((event) => !event.startswith('$')),
+            (user) => user.team.event_names.filter((event) => !event.startsWith('$')),
         ],
         eventNamesGrouped: [
             () => [selectors.user],
