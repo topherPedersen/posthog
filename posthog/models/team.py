@@ -1,7 +1,7 @@
 from typing import List
 from django.db import models, connection
 from django.contrib.postgres.fields import JSONField, ArrayField
-from psycopg2 import sql
+from psycopg2 import sql  # type: ignore
 from .action import Action
 from .action_step import ActionStep
 from .dashboard import Dashboard
