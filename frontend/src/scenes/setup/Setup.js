@@ -17,6 +17,12 @@ import { router } from 'kea-router'
 import { hot } from 'react-hot-loader/root'
 import { ToolbarSettings } from 'scenes/setup/ToolbarSettings'
 
+// Debugging Function (Retrieves list of Team Members from Backend API)
+// *** DELETE THIS FUNCTION BEFORE SUBMITTING PULL REQUEST ***
+function getTeamMembers() {
+    alert('TODO: Retrieve List of Team Members from Backend API')
+}
+
 export const Setup = hot(_Setup)
 function _Setup() {
     const { user } = useValues(userLogic)
@@ -62,6 +68,7 @@ function _Setup() {
             <ul>
                 <li>{user.name}</li>
             </ul>
+            <button onClick={() => getTeamMembers()}>Retrieve Team Members list from API</button>
             <Divider />
             <h2 id="demodata">Delete HogFlix demo data</h2>
             <DeleteDemoData />
