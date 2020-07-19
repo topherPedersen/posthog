@@ -60,9 +60,7 @@ function _Setup() {
             <Divider />
             <h2 id="teammembers">Team Members</h2>
             <ul>
-                <li>Tim Berners-Lee</li>
-                <li>Brendan Eich</li>
-                <li>Guido van Rossum</li>
+                <li>{user.name}</li>
             </ul>
             <Divider />
             <h2 id="demodata">Delete HogFlix demo data</h2>
